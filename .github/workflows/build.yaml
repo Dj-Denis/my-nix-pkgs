@@ -31,4 +31,6 @@ jobs:
 
       - name: Build and Push All Flake Packages
         run: |
-          nix build .#packages.x86_64-linux --all --print-build-logs
+          nix eval --json .#packages.x86_64-linux --apply 'builtins.attrNames' \
+            | jq -r '.[]' \
+            | xargs -I {} nix build .#packages.x86_64-linux.{} --print-build-logs
