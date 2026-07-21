@@ -1,0 +1,39 @@
+name: "Update Package Sources"
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+
+      - name: Install nix-update tool
+        run: nix profile install nixpkgs#nix-update
+
+      - name: Check and update Amethyst Mod Manager
+        id: update_amethyst
+        run: |
+          nix-update amethyst-mod-manager || echo "NO_UPDATES=true" >> $GITHUB_ENV
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): update amethyst-mod-manager source"
+          title: "chore(deps): update amethyst-mod-manager package version"
+          branch: "auto-update/amethyst-mod-manager"
+          labels: |
+            dependencies
+            automated-pr
