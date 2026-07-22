@@ -16,7 +16,7 @@
         };
       in {
         packages = with pkgs; {
-          amethyst_mod_manager = callPackage ./amethyst_mod_manager.nix {};
+          amethyst-mod-manager = callPackage ./amethyst-mod-manager/default.nix {};
         };
       }
     );
