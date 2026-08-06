@@ -13,13 +13,13 @@
 
 python3Packages.buildPythonApplication rec {
   pname = "amethyst-mod-manager";
-  version = "2.0.5";
+  version = "2.1.0";
 
   src = fetchFromGitHub {
     owner = "ChrisDKN";
     repo = "Amethyst-Mod-Manager";
     rev = "v${version}";
-    hash = "sha256-TR2dLZ+7gHSO8eosskCKg5JP9b/2MCZQingd3psFK8M="; # Replace with real hash
+    hash = "sha256-mkhrlBIiH2xbFWEwx7GE6dODVqTI+hjjgL+JVIkHAjs="; # Replace with real hash
   };
 
   format = "other";
