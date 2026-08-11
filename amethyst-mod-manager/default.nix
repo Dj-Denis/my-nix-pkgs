@@ -9,6 +9,7 @@
   cabextract,
   copyDesktopItems,
   makeDesktopItem,
+  python-libloot,
 }:
 
 python3Packages.buildPythonApplication rec {
@@ -49,6 +50,7 @@ python3Packages.buildPythonApplication rec {
     backports-tarfile
     msgpack
     bsdiff4
+    python-libloot
   ];
 
   runtimeDeps = [
@@ -91,14 +93,23 @@ python3Packages.buildPythonApplication rec {
     runHook postInstall
   '';
 
+  postInstallCheck = ''
+    ${python3Packages.python.interpreter} -c "import loot"
+  '';
+  doCheck = true;
+
   desktopItems = [
     (makeDesktopItem {
       name = "amethyst-mod-manager";
-      exec = "amethyst-mod-manager";
+      exec = "amethyst-mod-manager %u";
       icon = "amethyst-mod-manager";
       comment = "A native Linux mod manager inspired by MO2 and Vortex";
       desktopName = "Amethyst Mod Manager";
       categories = [ "Game" ];
+      mimeTypes = [
+        "x-scheme-handler/nxm"
+        "x-scheme-handler/amethyst"
+      ];
     })
   ];
 

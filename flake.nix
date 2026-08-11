@@ -15,8 +15,11 @@
           config.allowUnfree = true; # For unrar
         };
       in {
-        packages = with pkgs; {
-          amethyst-mod-manager = callPackage ./amethyst-mod-manager/default.nix {};
+        packages = with pkgs; rec {
+          python-libloot = pkgs.callPackage ./python-libloot {};
+          amethyst-mod-manager = callPackage ./amethyst-mod-manager/default.nix {
+            inherit python-libloot;
+          };
         };
       }
     );
