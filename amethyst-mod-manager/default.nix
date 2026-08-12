@@ -4,7 +4,7 @@
   fetchFromGitHub,
   qt6,
   makeBinaryWrapper,
-  p7zip,
+  p7zip-rar,
   unrar,
   cabextract,
   copyDesktopItems,
@@ -54,7 +54,7 @@ python3Packages.buildPythonApplication rec {
   ];
 
   runtimeDeps = [
-    p7zip
+    p7zip-rar
     unrar
     cabextract
   ];
