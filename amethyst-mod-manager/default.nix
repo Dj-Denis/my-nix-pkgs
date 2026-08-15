@@ -67,6 +67,7 @@ python3Packages.buildPythonApplication rec {
     mkdir -p $out/share/amethyst-mod-manager
     cp -a src/run_qt.py src/cli.py src/app_bootstrap.py src/version.py src/gui_qt \
           src/wizards_qt src/Utils src/Games src/LOOT src/Nexus src/icons src/wrappers \
+          src/Thunderstore src/translations \
           $out/share/amethyst-mod-manager/
     [ -f Changelog.txt ] && cp Changelog.txt $out/share/amethyst-mod-manager/
 
