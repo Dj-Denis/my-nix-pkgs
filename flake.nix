@@ -56,8 +56,8 @@
       in {
         packages = with pkgs;
           rec {
-            python-libloot = pkgs.callPackage ./pkgs/python-libloot {};
-            amethyst-mod-manager = callPackage ./pkgs/amethyst-mod-manager {
+            python-libloot = pkgs.callPackage ./pkgs/python-libloot.nix {};
+            amethyst-mod-manager = callPackage ./pkgs/amethyst-mod-manager.nix {
               inherit python-libloot;
             };
           }
