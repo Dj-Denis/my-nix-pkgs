@@ -1,4 +1,4 @@
-name: "Update Package Sources"
+name: "Auto-Update Packages"
 
 on:
   schedule:
@@ -6,11 +6,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-packages:
+  find-packages:
     runs-on: ubuntu-latest
+    outputs:
+      pkgs: ${{ steps.set-pkgs.outputs.pkgs }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Extract package list from flake
+        id: set-pkgs
+        run: |
+          # Evaluates the flake and outputs a JSON array of all package attribute names
+          PKGS_JSON=$(nix eval --json .#packages.x86_64-linux --apply 'builtins.attrNames')
+          echo "Discovered packages: $PKGS_JSON"
+          echo "pkgs=$PKGS_JSON" >> $GITHUB_OUTPUT
+
+  update-package:
+    needs: find-packages
+    runs-on: ubuntu-latest
+    continue-on-error: true
     permissions:
       contents: write
       pull-requests: write
+
+    strategy:
+      matrix:
+        pkg: ${{ fromJson(needs.find-packages.outputs.pkgs) }}
 
     steps:
       - name: Checkout repository
@@ -18,22 +46,42 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
 
       - name: Install nix-update tool
         run: nix profile install nixpkgs#nix-update
 
-      - name: Check and update Amethyst Mod Manager
-        id: update_amethyst
+      - name: Run nix-update for ${{ matrix.pkg }}
+        id: update
         run: |
-          nix-update --flake amethyst-mod-manager || echo "NO_UPDATES=true" >> $GITHUB_ENV
+          nix-update --flake "${{ matrix.pkg }}"
+
+      - name: Report Failure to Job Summary
+        if: failure()
+        run: |
+          echo "### ❌ Update Failed: \`${{ matrix.pkg }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Failed to run \`nix-update\` for package \`${{ matrix.pkg }}\`. Check step logs for details." >> $GITHUB_STEP_SUMMARY
 
       - name: Create Pull Request
+        if: success()
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(deps): update amethyst-mod-manager source"
-          title: "chore(deps): update amethyst-mod-manager package version"
-          branch: "auto-update/amethyst-mod-manager"
+          commit-message: "chore(deps): update ${{ matrix.pkg }} source"
+          title: "chore(deps): update ${{ matrix.pkg }} package version"
+          body: |
+            Automated update for package `${{ matrix.pkg }}`.
+
+            Triggered by `.github/workflows/update-packages.yml`.
+          branch: "auto-update/${{ matrix.pkg }}"
+          delete-branch: true
           labels: |
             dependencies
             automated-pr
+
+      - name: Report Success to Job Summary
+        if: success()
+        run: |
+          echo "### ✅ Update Succeeded: \`${{ matrix.pkg }}\`" >> $GITHUB_STEP_SUMMARY
