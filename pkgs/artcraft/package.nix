@@ -20,6 +20,7 @@
   hash,
   description,
   homepage,
+  nix-update-script,
 }:
 stdenv.mkDerivation rec {
   inherit pname version;
@@ -70,13 +71,13 @@ stdenv.mkDerivation rec {
     ${pname} --version
   '';
 
-  passthru.updateScript = [
-    "nix-update"
-    "--flake"
-    pname
-    "--override-filename"
-    "pkgs/artcraft/${pname}.nix"
-  ];
+  passthru.updateScript = nix-update-script {
+    extraArgs = [
+      "--flake"
+      "--override-filename"
+      "pkgs/artcraft/${pname}.nix"
+    ];
+  };
 
   meta = with lib; {
     inherit description homepage;
