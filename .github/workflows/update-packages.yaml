@@ -56,7 +56,7 @@ jobs:
       - name: Run nix-update for ${{ matrix.pkg }}
         id: update
         run: |
-          nix-update --flake "${{ matrix.pkg }}"
+          nix-update --flake "${{ matrix.pkg }}" --use-update-script
 
       - name: Report Failure to Job Summary
         if: failure()
@@ -68,7 +68,7 @@ jobs:
         if: success()
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           commit-message: "chore(deps): update ${{ matrix.pkg }} source"
           title: "chore(deps): update ${{ matrix.pkg }} package version"
           body: |

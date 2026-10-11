@@ -15,16 +15,12 @@
   libxi,
   libxrandr,
   lib,
-}:
-
-{
   pname,
   version,
   hash,
   description,
   homepage,
 }:
-
 stdenv.mkDerivation rec {
   inherit pname version;
 
@@ -73,6 +69,14 @@ stdenv.mkDerivation rec {
   postInstallCheck = ''
     ${pname} --version
   '';
+
+  passthru.updateScript = [
+    "nix-update"
+    "--flake"
+    pname
+    "--override-filename"
+    "pkgs/artcraft/${pname}.nix"
+  ];
 
   meta = with lib; {
     inherit description homepage;
