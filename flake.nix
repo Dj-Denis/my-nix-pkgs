@@ -16,10 +16,10 @@
         };
       in {
         packages = with pkgs; rec {
-          python-libloot = pkgs.callPackage ./pkgs/python-libloot.nix {};
-          amethyst-mod-manager = callPackage ./pkgs/amethyst-mod-manager.nix {
-            inherit python-libloot;
-          };
+          # python-libloot = pkgs.callPackage ./pkgs/python-libloot.nix {};
+          # amethyst-mod-manager = callPackage ./pkgs/amethyst-mod-manager.nix {
+          #   inherit python-libloot;
+          # };
           pdfcraft = pkgs.callPackage ./pkgs/artcraft/pdfcraft.nix {};
           wordcraft = pkgs.callPackage ./pkgs/artcraft/wordcraft.nix {};
           vectorcraft = pkgs.callPackage ./pkgs/artcraft/vectorcraft.nix {};
