@@ -1,8 +1,8 @@
 {pkgs}:
 pkgs.callPackage ./package.nix {
   pname = "gridcraft";
-  version = "0.13.0";
-  hash = "sha256-IMbFbsH/1rvP/ubN7ljPa1yt0vSgSkNg3XzGTVOtl+U=";
+  version = "0.16.1";
+  hash = "sha256-Qp4DNM3TDtdev/WUU6ZEEUw8t+M0eZGoGzIEHXX0H+Q=";
   description = "GridCraft: an open-source, clean-room spreadsheet (Microsoft Excel-style) in pure Rust. By ArtCraft";
   homepage = "https://github.com/storytold/gridcraft";
 }
