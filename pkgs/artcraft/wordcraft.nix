@@ -1,8 +1,8 @@
 {pkgs}:
 pkgs.callPackage ./package.nix {
   pname = "wordcraft";
-  version = "0.15.2";
-  hash = "sha256-Nm5U4jW0Yxd5wMeMB3eogN5REWPekTCreM5ZWD96C5o=";
+  version = "0.18.1";
+  hash = "sha256-MSoFfUbdgFl8EtzP0Ql84l7epAuqrrULy28BrBrrrbU=";
   description = "An open-source, clean-room reimplementation of Microsoft Word in pure Rust";
   homepage = "https://github.com/storytold/wordcraft";
 }
